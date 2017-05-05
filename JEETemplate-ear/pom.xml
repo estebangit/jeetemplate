@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <!--
+            This pom builds the EAR artifact and includes the EJB and Web modules.
+    -->
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.esteban</groupId>
+        <artifactId>JEETemplate</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>JEETemplate-ear</artifactId>
+    <packaging>ear</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>JEETemplate EAR</name>
+    <description>Template de projet JEE</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.esteban</groupId>
+            <artifactId>JEETemplate-web</artifactId>
+            <type>war</type>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.esteban</groupId>
+            <artifactId>JEETemplate-business</artifactId>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>com.esteban</groupId>
+            <artifactId>JEETemplate-public</artifactId>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- Set the name of the deployment -->
+        <finalName>${project.parent.artifactId}</finalName>
+        <plugins>
+
+            <!--Ear plugin -creating the ear - watch out skinny WARS!-->
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-ear-plugin</artifactId>-->
+            <!--<configuration>-->
+            <!--<finalName>sampleapp</finalName>-->
+            <!--<defaultJavaBundleDir>lib/</defaultJavaBundleDir>-->
+            <!--<skinnyWars>true</skinnyWars>-->
+            <!--<modules>-->
+            <!--<ejbModule>-->
+            <!--<groupId>com.esteban</groupId>-->
+            <!--<artifactId>JEETemplate-business</artifactId>-->
+            <!--</ejbModule>-->
+            <!--</modules>-->
+            <!--</configuration>-->
+            <!--</plugin>-->
+
+            <!-- EAR plug-in -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <version>${ear-plugin-version}</version>
+                <!-- configuring the EAR plug-in -->
+                <configuration>
+                    <!-- Tell Maven we are using Java EE -->
+                    <version>6</version>
+                    <!-- Use Java EE ear libraries as needed. Java EE ear libraries
+                        are in easy way to package any libraries needed in the ear, and automatically
+                        have any modules (EJB-JARs and WARs) use them -->
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <modules>
+                        <!-- Default context root of the web app is /jboss-ejb-in-ear-web.
+                            If a custom context root is needed, uncomment the following snippet to
+                            register our War as a web module and set the contextRoot property -->
+                        <webModule>
+                            <groupId>com.esteban</groupId>
+                            <artifactId>JEETemplate-web</artifactId>
+                            <contextRoot>/JEETemplate</contextRoot>
+                        </webModule>
+                    </modules>
+                    <fileNameMapping>no-version</fileNameMapping>
+                </configuration>
+            </plugin>
+            <!-- WildFly plug-in to deploy EAR -->
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-maven-plugin</artifactId>
+                <version>${version.wildfly.maven.plugin}</version>
+                <configuration>
+                    <filename>${project.parent.artifactId}.ear</filename>
+                    <!--<filename>${project.build.finalName}.jar</filename>-->
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
