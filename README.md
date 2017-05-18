@@ -101,7 +101,39 @@ Build and Deploy the application
 
 4. This will deploy `ear/target/JEETemplate.ear` to the running instance of the server.
 
+
  
+Configure Oracle in JBoss
+---------------------
+Sources: 
+
+<https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.0/html-single/configuration_guide/#datasource_management>
+
+<http://stackoverflow.com/questions/41461091/unable-to-create-oracle-data-source-in-jboss-eap-7-0-server>
+
+Using:
+
+    $EAP7_HOME/bin/jboss-cli.sh
+
+
+1. Add the Oracle JDBC driver as a core module.
+    
+       module add --name=com.oracle --resources=ojdbc6.jar --dependencies=javax.api,javax.transaction.api
+
+
+2. Register the Oracle JDBC driver
+
+       /subsystem=datasources/jdbc-driver=oracle:add(driver-name=oracle,driver-module-name=com.oracle,driver-xa-datasource-class-name=oracle.jdbc.xa.client.OracleXADataSource)
+
+3. Add Oracle datasource to JBoss
+
+        data-source add --name=OracleDS --jndi-name=java:jboss/OracleDS --driver-name=oracle --connection-url=jdbc:oracle:thin:@localhost:1521:XE --user-name=myDBUser --password=myDBPassword --validate-on-match=true --background-validation=false --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleValidConnectionChecker --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleExceptionSorter --stale-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.oracle.OracleStaleConnectionChecker
+
+
+The config file will be under :
+
+/usr/local/share/jboss/standalone/configuration/standalone.xml
+
 
 Access the application 
 ---------------------
