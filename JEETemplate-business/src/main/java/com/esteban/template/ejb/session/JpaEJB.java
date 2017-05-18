@@ -19,7 +19,6 @@ import java.util.List;
 @Stateless
 public class JpaEJB {
 
-    //private static final java.util.logging.Logger.Logger log = java.util.logging.Logger.Logger.getLogger(JpaEJB.class.getName());
     private static final Logger log = LoggerFactory.getLogger(JpaEJB.class);
 
     @PersistenceContext(unitName = "samplePU")
